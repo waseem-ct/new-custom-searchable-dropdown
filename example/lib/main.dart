@@ -67,11 +67,11 @@ class _MyHomePageState extends State<MyHomePage> {
                   initialValue: [
                     {'parameter': 'name', 'value': 'Waseem'}
                   ],
-                  dropdownItemStyle: TextStyle(color: Colors.red),
-                  primaryColor: Colors.red,
+                  dropdownItemStyle: TextStyle(color: Colors.grey),
+                  primaryColor: Colors.blue,
                   menuMode: true,
-                  labelStyle:
-                      TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                  labelStyle: TextStyle(
+                      color: Colors.grey, fontWeight: FontWeight.bold),
                   items: listToSearch,
                   label: 'Select Name',
                   prefixIcon: Icon(Icons.search),
