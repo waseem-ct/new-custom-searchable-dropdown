@@ -1,24 +1,32 @@
-# custom_searchable_dropdown
+# Custom Searchable Dropdown Widget
 
-Widget allows user to search from a dynamic list of data you can customise the dropdown according to your need,it can also be customised as multiple select or single select. The on change event reurn the complete list from index which option is selected.
+The **Custom Searchable Dropdown** widget allows users to search from a dynamic list of data. You can customize the dropdown to suit your needs, and it supports both multiple select and single select options. The widget’s `onChange` event returns the complete list or the index of the selected option.
 
-## Platforms
+---
+## Platforms Supported
 
-This widget has been successfully tested on iOS, Android and Chrome.
+This widget has been successfully tested on the following platforms:
+- iOS
+- Android
+- Chrome
+
+---
 
 ## Examples
 
-The Example will help you to know how it works.
+The following examples showcase how the widget works in different modes.
 
 ### Gallery
 
 See code below.
 
-| Example name | Image |
-| --- | --- |
-| [Menu Mode](#Menu-Mode) | ![Menu Mode](doc/images/menuMode.png) |
-| [All DropDown](#All-DropDown) | ![All DropDown](doc/images/all.png) |
-| [MultiSelect DropDown](#MultiSelect-DropDown) | ![MultiSelect DropDown](doc/images/multiSelect.png) | 
+### Gallery
+
+| Example Name       | Image                                                                 |
+| ------------------ | --------------------------------------------------------------------- |
+| [Menu Mode](#Menu-Mode)      | ![Menu Mode](doc/images/menuMode.png)                              |
+| [All DropDown](#All-DropDown) | ![All DropDown](doc/images/all.png)                                |
+| [MultiSelect DropDown](#MultiSelect-DropDown) | ![MultiSelect DropDown](doc/images/multiSelect.png)  |
 
 ### Code
 
