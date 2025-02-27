@@ -1,179 +1,3 @@
-// import 'dart:convert';
-// import 'package:custom_searchable_dropdown/custom_searchable_dropdown.dart';
-// import 'package:flutter/material.dart';
-//
-// void main() {
-//   runApp(MyApp());
-// }
-//
-// class MyApp extends StatelessWidget {
-//   // This widget is the root of your application.
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       title: 'Flutter Demo',
-//       theme: ThemeData(
-//         // This is the theme of your application.
-//         primarySwatch: Colors.blue,
-//         visualDensity: VisualDensity.adaptivePlatformDensity,
-//       ),
-//       home: MyHomePage(
-//         title: 'Custom Searchable DropDown Demo',
-//       ),
-//     );
-//   }
-// }
-//
-// class MyHomePage extends StatefulWidget {
-//   MyHomePage({Key? key, required this.title}) : super(key: key);
-//
-//   final String title;
-//
-//   @override
-//   _MyHomePageState createState() => _MyHomePageState();
-// }
-//
-// class _MyHomePageState extends State<MyHomePage> {
-//   // Updated list with Indian Muslim names including Waseem
-//   List listToSearch = [
-//     {'name': 'Waseem', 'class': 12},
-//     {'name': 'Ayaan', 'class': 9},
-//     {'name': 'Zain', 'class': 7},
-//     {'name': 'Noor', 'class': 6},
-//     {'name': 'Sarah', 'class': 5},
-//     {'name': 'Omar', 'class': 4},
-//     {'name': 'Layla', 'class': 3},
-//   ];
-//
-//   var selected;
-//   late List selectedList;
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: Text(widget.title)),
-//       body: Center(
-//         child: Padding(
-//           padding: const EdgeInsets.all(8.0),
-//           child: ListView(
-//             children: <Widget>[
-//               SizedBox(height: 20),
-//               Text('Menu Mode', style: TextStyle(fontWeight: FontWeight.bold)),
-//               Padding(
-//                 padding: const EdgeInsets.all(8.0),
-//                 child: CustomSearchableDropDown(
-//                   dropdownHintText: 'Search For Name Here... ',
-//                   showLabelInMenu: true,
-//                   initialValue: [
-//                     {'parameter': 'name', 'value': 'Waseem'}
-//                   ],
-//                   dropdownItemStyle: TextStyle(color: Colors.grey),
-//                   primaryColor: Colors.blue,
-//                   menuMode: true,
-//                   labelStyle: TextStyle(
-//                       color: Colors.grey, fontWeight: FontWeight.bold),
-//                   items: listToSearch,
-//                   label: 'Select Name',
-//                   prefixIcon: Icon(Icons.search),
-//                   dropDownMenuItems:
-//                       listToSearch.map((item) => item['name']).toList(),
-//                   onChanged: (value) {
-//                     if (value != null) {
-//                       selected = value['class'].toString();
-//                     } else {
-//                       selected = null;
-//                     }
-//                   },
-//                 ),
-//               ),
-//               SizedBox(height: 20),
-//               Text('Select a value',
-//                   style: TextStyle(fontWeight: FontWeight.bold)),
-//               Padding(
-//                 padding: const EdgeInsets.all(8.0),
-//                 child: CustomSearchableDropDown(
-//                   items: listToSearch,
-//                   label: 'Select Name',
-//                   decoration:
-//                       BoxDecoration(border: Border.all(color: Colors.blue)),
-//                   prefixIcon: Padding(
-//                       padding: const EdgeInsets.all(0.0),
-//                       child: Icon(Icons.search)),
-//                   dropDownMenuItems:
-//                       listToSearch.map((item) => item['name']).toList(),
-//                   onChanged: (value) {
-//                     if (value != null) {
-//                       selected = value['class'].toString();
-//                     } else {
-//                       selected = null;
-//                     }
-//                   },
-//                 ),
-//               ),
-//               Text('Multi Select',
-//                   style: TextStyle(fontWeight: FontWeight.bold)),
-//               Padding(
-//                 padding: const EdgeInsets.all(8.0),
-//                 child: CustomSearchableDropDown(
-//                   items: listToSearch,
-//                   label: 'Select Name',
-//                   multiSelectTag: 'Names',
-//                   decoration:
-//                       BoxDecoration(border: Border.all(color: Colors.blue)),
-//                   multiSelect: true,
-//                   prefixIcon: Padding(
-//                     padding: const EdgeInsets.all(0.0),
-//                     child: Icon(Icons.search),
-//                   ),
-//                   dropDownMenuItems:
-//                       listToSearch.map((item) => item['name']).toList(),
-//                   onChanged: (value) {
-//                     if (value != null) {
-//                       selectedList = jsonDecode(value);
-//                     } else {
-//                       selectedList.clear();
-//                     }
-//                   },
-//                 ),
-//               ),
-//               Text('Multi Select as Widget',
-//                   style: TextStyle(fontWeight: FontWeight.bold)),
-//               Padding(
-//                 padding: const EdgeInsets.all(8.0),
-//                 child: CustomSearchableDropDown(
-//                   initialValue: [
-//                     {'parameter': 'name', 'value': 'Waseem'},
-//                     {'parameter': 'name', 'value': 'Akhtar'}
-//                   ],
-//                   items: listToSearch,
-//                   label: 'Select Name',
-//                   multiSelectTag: 'Names',
-//                   multiSelectValuesAsWidget: true,
-//                   decoration:
-//                       BoxDecoration(border: Border.all(color: Colors.blue)),
-//                   multiSelect: true,
-//                   prefixIcon: Padding(
-//                       padding: const EdgeInsets.all(0.0),
-//                       child: Icon(Icons.search)),
-//                   dropDownMenuItems:
-//                       listToSearch.map((item) => item['name']).toList(),
-//                   onChanged: (value) {
-//                     print(value.toString());
-//                     if (value != null) {
-//                       selectedList = jsonDecode(value);
-//                     } else {
-//                       selectedList.clear();
-//                     }
-//                   },
-//                 ),
-//               ),
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
 import 'dart:convert';
 
 import 'package:custom_searchable_dropdown/custom_searchable_dropdown.dart';
@@ -205,9 +29,27 @@ class Student {
   final int studentClass; // Renamed from 'class' since it's reserved.
   Student({required this.name, required this.studentClass});
   factory Student.fromMap(Map<String, dynamic> map) => Student(name: map['name'], studentClass: map['class'] as int);
+  Map<String, dynamic> toJson() => {'name': name, 'age': studentClass};
+
   Map<String, dynamic> toMap() => {'name': name, 'class': studentClass};
   @override
   String toString() => name;
+}
+
+class NumberEntry {
+  int value;
+
+  NumberEntry(this.value);
+
+  // Factory constructor to create a NumberEntry from a map (if needed in the future)
+  factory NumberEntry.fromMap(Map<String, dynamic> map) {
+    return NumberEntry(map['value']);
+  }
+
+  @override
+  String toString() {
+    return value.toString();
+  }
 }
 
 ///
@@ -221,6 +63,12 @@ class MyExamplePage extends StatefulWidget {
 class _MyExamplePageState extends State<MyExamplePage> {
   String? selected;
   List<dynamic> selectedList = [];
+  late List<NumberEntry> numberEntries;
+  late List<Student> studentList;
+
+  // Sample data as a array.
+
+  List<int> data = [1, 85, 15, 41, 5, 415, 415, 4, 54, 41, 54, 88, 14, 8, 45, 15, 0, 141];
 
   // Sample data as a list of maps.
   List<Map<String, dynamic>> listToSearch = [
@@ -232,13 +80,13 @@ class _MyExamplePageState extends State<MyExamplePage> {
     {'name': 'Layla', 'class': 3}
   ];
 
-  late List<Student> studentList;
-
   @override
   void initState() {
     super.initState();
     // Convert maps to a list of Student objects.
     studentList = listToSearch.map((map) => Student.fromMap(map)).toList();
+    // Initialize the numberEntries list using the data
+    numberEntries = data.map((value) => NumberEntry(value)).toList();
   }
 
   @override
@@ -254,13 +102,11 @@ class _MyExamplePageState extends State<MyExamplePage> {
             // Single-select with modal menu mode:
             CustomSearchableDropDown<Student>(
               dropdownHintText: 'Search For Name Here...',
-              menuMode: false,
-              showLabelInMenu: false,
+              menuMode: true,
+              showLabelInMenu: true,
+              showClearButton: true,
               initialValue: [studentList.first],
-              dropdownItemStyle: TextStyle(color: Colors.grey),
-              primaryColor: Colors.blue,
               items: studentList,
-              prefixIcon: Icon(Icons.search),
               // Use a display callback to define how each Student is shown.
               displayItem: (Student student) => '${student.name}',
               onChanged: (value) => setState(() {
@@ -277,9 +123,22 @@ class _MyExamplePageState extends State<MyExamplePage> {
             CustomSearchableDropDown<Student>(
               items: studentList,
               label: 'Select Student',
-              decoration: BoxDecoration(border: Border.all(color: Colors.blue)),
-              prefixIcon: Padding(padding: const EdgeInsets.all(0.0), child: Icon(Icons.search)),
+              showLabelInMenu: true,
+              // prefixIcon: Padding(padding: const EdgeInsets.all(0.0), child: Icon(Icons.search)),
               displayItem: (Student student) => '${student.name} - Class ${student.studentClass}',
+              onChanged: (value) => setState(() {
+                if (value != null && value is Student) {
+                  selected = value.studentClass.toString();
+                } else {
+                  selected = null;
+                }
+              }),
+            ),
+            Text('Select a Number', style: TextStyle(fontWeight: FontWeight.bold)),
+            CustomSearchableDropDown<NumberEntry>(
+              items: numberEntries,
+              label: 'Select Number',
+              displayItem: (NumberEntry numberEntries) => numberEntries.value.toString(),
               onChanged: (value) => setState(() {
                 if (value != null && value is Student) {
                   selected = value.studentClass.toString();
@@ -294,9 +153,7 @@ class _MyExamplePageState extends State<MyExamplePage> {
               items: studentList,
               label: 'Select Student',
               multiSelectTag: 'Students',
-              decoration: BoxDecoration(border: Border.all(color: Colors.blue)),
               multiSelect: true,
-              prefixIcon: Padding(padding: const EdgeInsets.all(0.0), child: Icon(Icons.search)),
               displayItem: (Student student) => '${student.name} - Class ${student.studentClass}',
               onChanged: (value) => setState(() {
                 // For multi-select, onChanged returns a JSON encoded list.
@@ -315,9 +172,7 @@ class _MyExamplePageState extends State<MyExamplePage> {
               label: 'Select Student',
               multiSelectTag: 'Students',
               multiSelectValuesAsWidget: true,
-              decoration: BoxDecoration(border: Border.all(color: Colors.blue)),
               multiSelect: true,
-              prefixIcon: Padding(padding: const EdgeInsets.all(0.0), child: Icon(Icons.search)),
               displayItem: (Student student) => '${student.name} - Class ${student.studentClass}',
               onChanged: (value) => setState(() {
                 if (value != null && value is String) {
