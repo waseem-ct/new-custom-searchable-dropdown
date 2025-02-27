@@ -1,41 +1,54 @@
 # Custom Searchable Dropdown Widget
 
+[![Pub Version](https://img.shields.io/pub/v/custom_searchable_dropdown)](https://pub.dev/packages/custom_searchable_dropdown)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/amirr-dotcom/custom_searchable_dropdown/blob/main/LICENSE)
+
 The **Custom Searchable Dropdown** widget allows users to search from a dynamic list of data. You can customize the dropdown to suit your needs, and it supports both multiple select and single select options. The widget’s `onChange` event returns the complete list or the index of the selected option.
 
 ---
-## Platforms Supported
 
-This widget has been successfully tested on the following platforms:
-- iOS
-- Android
-- Chrome
+## 📌 Features
+
+✅ Searchable dropdown with instant filtering  
+✅ Single and multi-select modes  
+✅ Custom styling and theming support  
+✅ Async data loading for large datasets  
+✅ Works on mobile and web  
+✅ Keyboard and touch navigation support  
+✅ Support for custom UI widgets inside dropdown
 
 ---
 
-## Examples
+## 🏗 Platforms Supported
+
+This widget has been successfully tested on the following platforms:
+- ✅ iOS
+- ✅ Android
+- ✅ Web (Chrome)
+
+---
+
+## 🎨 Examples
 
 The following examples showcase how the widget works in different modes.
 
-### Gallery
+### 📌 Gallery
 
-See code below.
-
-### Gallery
-
-| Example Name       | Image                                                                 |
+| Example Name       | Preview Image                                                           |
 | ------------------ | --------------------------------------------------------------------- |
 | [Menu Mode](#Menu-Mode)      | ![Menu Mode](doc/images/menuMode.png)                              |
 | [All DropDown](#All-DropDown) | ![All DropDown](doc/images/all.png)                                |
 | [MultiSelect DropDown](#MultiSelect-DropDown) | ![MultiSelect DropDown](doc/images/multiSelect.png)  |
 
-### Code
+---
 
-#### Plugin usage
+## 🛠 Installation
 
-Add to your `pubspec.yaml` in the `dependencies` section:
-```
-  custom_searchable_dropdown:
-```
+Add this dependency to your `pubspec.yaml`:
+
+```yaml
+dependencies:
+  custom_searchable_dropdown: latest_version
 
 Get packages with command:
 ```
@@ -47,8 +60,20 @@ Import:
 import 'package:custom_searchable_dropdown/custom_searchable_dropdown.dart';
 ```
 
+# 📝 Usage
+---
+#### 🎯 Basic Example
+```dart
+CustomSearchableDropDown(
+items: ["Apple", "Banana", "Cherry", "Date"],
+label: "Select a fruit",
+onChanged: (value) {
+print("Selected: $value");
+},
+);
+```
 
-#### Menu Mode
+#### 🏷 Menu Mode
 ```dart
     CustomSearchableDropDown(
                       dropdownHintText: 'Search For Name Here... ',
@@ -81,7 +106,7 @@ import 'package:custom_searchable_dropdown/custom_searchable_dropdown.dart';
                     ),
 ```
 
-#### Single Select
+#### 🎯 Single Select Mode
 ```dart
      CustomSearchableDropDown(
                      items: listToSearch,
@@ -110,7 +135,7 @@ import 'package:custom_searchable_dropdown/custom_searchable_dropdown.dart';
                      },
                    ),
 ```
-#### Multi Select
+####  Multi Select Mode
 ```dart
       CustomSearchableDropDown(
                       items: listToSearch,
@@ -184,3 +209,6 @@ import 'package:custom_searchable_dropdown/custom_searchable_dropdown.dart';
                     }
                   },
                 ),"# csd" 
+
+
+
