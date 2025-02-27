@@ -46,7 +46,7 @@ dependencies:
 
 Get packages with command:
 ```dart
-flutter packages get
+flutter pub add custom_searchable_dropdown
 ```
 
 #### Import:
@@ -69,142 +69,113 @@ import 'package:custom_searchable_dropdown/custom_searchable_dropdown.dart';
 
 #### 🏷 Menu Mode
 ```dart
-         CustomSearchableDropDown(
-              dropdownHintText: 'Search For Name Here... ',
-              showLabelInMenu: true,
-              primaryColor: Colors.red,
+        CustomSearchableDropDown<Student>(
+              dropdownHintText: 'Search For Name Here...',
               menuMode: true,
-              labelStyle: TextStyle(
-                color: Colors.red,
-                fontWeight: FontWeight.bold
-              ),
-              items: listToSearch,
-              label: 'Select Name',
-              prefixIcon:  Padding(
-                padding: const EdgeInsets.all(0.0),
-                child: Icon(Icons.search),
-              ),
-              dropDownMenuItems: listToSearch?.map((item) {
-                return item['name'];
-              })?.toList() ??
-                  [],
-              onChanged: (value){
-                if(value!=null)
-                {
-                  selected = value['class'].toString();
+              showLabelInMenu: true,
+              showClearButton: true,
+              initialValue: [studentList.first],
+              items: studentList,
+              // Use a display callback to define how each Student is shown.
+              displayItem: (Student student) => '${student.name}',
+              onChanged: (value) => setState(() {
+                // Since onChanged is dynamic, we check the type.
+                if (value != null && value is Student) {
+                  selected = value.studentClass.toString();
+                } else {
+                  selected = null;
                 }
-                else{
-                  selected=null;
-                }
-              },
-           ),
+              }),
+            ),
 ```
 
 #### 🎯 Single Select Mode
 ```dart
-     CustomSearchableDropDown(
-           items: listToSearch,
-           label: 'Select Name',
-           decoration: BoxDecoration(
-               border: Border.all(
-                   color: Colors.blue
-               )
-           ),
-           prefixIcon:  Padding(
-             padding: const EdgeInsets.all(0.0),
-             child: Icon(Icons.search),
-           ),
-           dropDownMenuItems: listToSearch?.map((item) {
-             return item['name'];
-           })?.toList() ??
-               [],
-           onChanged: (value){
-             if(value!=null)
-             {
-               selected = value['class'].toString();
-             }
-             else{
-               selected=null;
-             }
-           },
-        ),
+       CustomSearchableDropDown<Student>(
+              items: studentList,
+              label: 'Select Student',
+              showLabelInMenu: true,
+              // prefixIcon: Padding(padding: const EdgeInsets.all(0.0), child: Icon(Icons.search)),
+              displayItem: (Student student) => '${student.name} - Class ${student.studentClass}',
+              onChanged: (value) => setState(() {
+                if (value != null && value is Student) {
+                  selected = value.studentClass.toString();
+                } else {
+                  selected = null;
+                }
+              }),
+            ),
 ```
 ####  🎯 Multi Select 
 ```dart
-      CustomSearchableDropDown(
-             items: listToSearch,
-             label: 'Select Name',
-             multiSelectTag: 'Names',
-             decoration: BoxDecoration(
-                 border: Border.all(
-                     color: Colors.blue
-                 )
-             ),
-             multiSelect: true,
-             prefixIcon:  Padding(
-               padding: const EdgeInsets.all(0.0),
-               child: Icon(Icons.search),
-             ),
-             dropDownMenuItems: listToSearch?.map((item) {
-               return item['name'];
-             })?.toList() ??
-                 [],
-             onChanged: (value){
-               if(value!=null)
-               {
-                 selectedList = jsonDecode(value);
-               }
-               else{
-                 selectedList.clear();
-               }
-             },
-           ),
+      CustomSearchableDropDown<Student>(
+              items: studentList,
+              label: 'Select Student',
+              multiSelectTag: 'Students',
+              multiSelect: true,
+              displayItem: (Student student) => '${student.name} - Class ${student.studentClass}',
+              onChanged: (value) => setState(() {
+                // For multi-select, onChanged returns a JSON encoded list.
+                if (value != null && value is String) {
+                  selectedList = jsonDecode(value);
+                } else {
+                  selectedList.clear();
+                }
+              }),
+            ),
 ```
 
 #### 🎯 Multi Select as Widget Mode
 ```dart
-     CustomSearchableDropDown(
-          initialValue: [
-            {
-              'parameter': 'name',
-              'value': 'Sam',
-            },
-            {
-              'parameter': 'name',
-              'value': 'flutter',
-            },
-          ],
-          items: listToSearch,
-          label: 'Select Name',
-          multiSelectTag: 'Names',
-          multiSelectValuesAsWidget: true,
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: Colors.blue
-            )
-          ),
-          multiSelect: true,
-          prefixIcon:  Padding(
-            padding: const EdgeInsets.all(0.0),
-            child: Icon(Icons.search),
-          ),
-          dropDownMenuItems: listToSearch?.map((item) {
-            return item['name'];
-          })?.toList() ??
-              [],
-          onChanged: (value){
-            print(value.toString());
-            if(value!=null)
-            {
-              selectedList = jsonDecode(value);
-            }
-            else{
-              selectedList.clear();
-            }
-          },
-         ),"# csd" 
+    CustomSearchableDropDown<Student>(
+              initialValue: [studentList.first, studentList[1]],
+              items: studentList,
+              label: 'Select Student',
+              multiSelectTag: 'Students',
+              multiSelectValuesAsWidget: true,
+              multiSelect: true,
+              displayItem: (Student student) => '${student.name} - Class ${student.studentClass}',
+              onChanged: (value) => setState(() {
+                if (value != null && value is String) {
+                  print(value.toString());
+                  selectedList = jsonDecode(value);
+                } else {
+                  selectedList.clear();
+                }
+              }),
+            ),
+```
 
 
+### List And json
+```dart
+///
+/// DATA MODEL
+///
+class Student {
+  final String name;
+  final int studentClass; // Renamed from 'class' since it's reserved.
+  Student({required this.name, required this.studentClass});
+  factory Student.fromMap(Map<String, dynamic> map) => Student(name: map['name'], studentClass: map['class'] as int);
+  Map<String, dynamic> toJson() => {'name': name, 'age': studentClass};
+
+  Map<String, dynamic> toMap() => {'name': name, 'class': studentClass};
+  @override
+  String toString() => name;
+}
+
+  // Sample data as a list of maps.
+  List<Map<String, dynamic>> listToSearch = [
+    {'name': 'Waseem', 'class': 12},
+    {'name': 'Ayaan', 'class': 9},
+    {'name': 'Zain', 'class': 7},
+    {'name': 'Sarah', 'class': 5},
+    {'name': 'Omar', 'class': 4},
+    {'name': 'Layla', 'class': 3}
+  ];
+```
+
+------
 
 ## 🔧 Customization Options
 
