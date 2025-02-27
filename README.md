@@ -140,11 +140,11 @@ import 'package:custom_searchable_dropdown/custom_searchable_dropdown.dart';
                   initialValue: [
                     {
                       'parameter': 'name',
-                      'value': 'Amir',
+                      'value': 'Sam',
                     },
                     {
                       'parameter': 'name',
-                      'value': 'Tazeem',
+                      'value': 'flutter',
                     },
                   ],
                   items: listToSearch,
