@@ -1,4 +1,10 @@
-// ignore: must_be_immutable
+library custom_searchable_dropdown;
+
+import 'dart:convert';
+import 'dart:math';
+
+import 'package:flutter/material.dart';
+
 class CustomSearchableDropDown extends StatefulWidget {
   List items = [];
   List? initialValue;
