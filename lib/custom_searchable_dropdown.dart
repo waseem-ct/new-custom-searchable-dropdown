@@ -5,36 +5,37 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-class CustomSearchableDropDown extends StatefulWidget {
-  List items = [];
-  List? initialValue;
-  double? searchBarHeight;
-  Color? primaryColor;
-  Color? backgroundColor;
-  Color? dropdownBackgroundColor;
-  EdgeInsetsGeometry? padding;
-  EdgeInsetsGeometry? margin;
-  EdgeInsetsGeometry? menuPadding;
-  String? label;
-  String? dropdownHintText;
-  TextStyle? labelStyle;
-  TextStyle? dropdownItemStyle;
-  String? hint = '';
-  String? multiSelectTag;
-  int? initialIndex;
-  Widget? prefixIcon;
-  Widget? suffixIcon;
-  bool? hideSearch;
-  bool? enabled;
-  bool? showClearButton;
-  bool? menuMode;
-  double? menuHeight;
-  bool? multiSelect;
-  bool? multiSelectValuesAsWidget;
-  bool? showLabelInMenu;
-  String? itemOnDialogueBox;
-  Decoration? decoration;
-  List dropDownMenuItems = [];
+class CustomSearchableDrop extends StatefulWidget {
+  final List items;
+  final List? initialValue;
+  final double? searchBarHeight;
+  final double? minLeadingWidth;
+  final Color? primaryColor;
+  final Color? backgroundColor;
+  final Color? dropdownBackgroundColor;
+  final EdgeInsetsGeometry? padding;
+  final EdgeInsetsGeometry? margin;
+  final EdgeInsetsGeometry? menuPadding;
+  final String? label;
+  final String? dropdownHintText;
+  final TextStyle? labelStyle;
+  final TextStyle? dropdownItemStyle;
+  final String? hint;
+  final String? multiSelectTag;
+  final int? initialIndex;
+  final Widget? prefixIcon;
+  final Widget? suffixIcon;
+  final bool? hideSearch;
+  final bool? enabled;
+  final bool? showClearButton;
+  final bool? menuMode;
+  final double? menuHeight;
+  final bool? multiSelect;
+  final bool? multiSelectValuesAsWidget;
+  final bool? showLabelInMenu;
+  final String? itemOnDialogueBox;
+  final Decoration? decoration;
+  final List dropDownMenuItems;
   final TextAlign? labelAlign;
   final ValueChanged onChanged;
 
@@ -42,11 +43,11 @@ class CustomSearchableDropDown extends StatefulWidget {
   final String? emptySearchText;
   final Widget? emptySearchWidget;
 
-  CustomSearchableDropDown({
+  CustomSearchableDrop({
     required this.items,
     required this.label,
     required this.onChanged,
-    this.hint,
+    this.hint = '',
     this.initialValue,
     this.labelAlign,
     this.searchBarHeight,
@@ -76,13 +77,14 @@ class CustomSearchableDropDown extends StatefulWidget {
     this.dropdownHintText,
     this.emptySearchText,
     this.emptySearchWidget,
+    this.minLeadingWidth,
   });
 
   @override
-  _CustomSearchableDropDownState createState() => _CustomSearchableDropDownState();
+  _CustomSearchableDropState createState() => _CustomSearchableDropState();
 }
 
-class _CustomSearchableDropDownState extends State<CustomSearchableDropDown> with WidgetsBindingObserver, TickerProviderStateMixin {
+class _CustomSearchableDropState extends State<CustomSearchableDrop> with WidgetsBindingObserver, TickerProviderStateMixin {
   String onSelectLabel = '';
   final searchC = TextEditingController();
   List menuData = [];
@@ -160,7 +162,8 @@ class _CustomSearchableDropDownState extends State<CustomSearchableDropDown> wit
                   shape: ContinuousRectangleBorder(borderRadius: BorderRadius.circular(15), side: BorderSide(color: widget.primaryColor ?? Colors.grey, width: 1)),
                   contentPadding: widget.padding ?? const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
                   tileColor: widget.backgroundColor ?? Colors.white,
-                  leading: widget.prefixIcon,
+                  leading: widget.prefixIcon ?? const SizedBox(),
+                  minLeadingWidth: widget.minLeadingWidth ?? 0,
                   title: (() {
                     if (widget.multiSelect == true && selectedValues.isNotEmpty) {
                       if (widget.multiSelectValuesAsWidget == true) {
@@ -259,7 +262,7 @@ class _CustomSearchableDropDownState extends State<CustomSearchableDropDown> wit
     return Container(
       width: double.infinity,
       padding: widget.menuPadding ?? (widget.menuMode ?? false ? EdgeInsets.zero : const EdgeInsets.all(10)),
-      decoration: BoxDecoration(color: widget.dropdownBackgroundColor ?? Colors.white, borderRadius: BorderRadius.circular(10)),
+      decoration: widget.decoration ?? BoxDecoration(color: widget.dropdownBackgroundColor ?? Colors.white, borderRadius: BorderRadius.circular(10)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -395,6 +398,7 @@ class _CustomSearchableDropDownState extends State<CustomSearchableDropDown> wit
         borderRadius: const BorderRadius.all(Radius.circular(5)),
         borderSide: BorderSide(color: widget.primaryColor ?? Colors.grey),
       );
+
   // Updated mainList method
   mainList(setState) {
     return Scrollbar(
