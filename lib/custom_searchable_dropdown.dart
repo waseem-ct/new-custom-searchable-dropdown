@@ -5,7 +5,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-
 class CustomSearchableDropDown extends StatefulWidget {
   final List items;
   final List? initialValue;
