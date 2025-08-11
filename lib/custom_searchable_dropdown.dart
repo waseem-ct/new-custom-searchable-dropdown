@@ -5,7 +5,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-class CustomSearchableDrop extends StatefulWidget {
+
+class CustomSearchableDropDown extends StatefulWidget {
   final List items;
   final List? initialValue;
   final double? searchBarHeight;
@@ -374,13 +375,13 @@ class _CustomSearchableDropState extends State<CustomSearchableDrop> with Widget
             // Added clear button that appears when there's text
             suffixIcon: searchC.text.isNotEmpty
                 ? IconButton(
-                    icon: Icon(Icons.clear, color: widget.primaryColor ?? Colors.black),
-                    onPressed: () {
-                      searchC.clear();
-                      onItemChanged('');
-                      setState(() {});
-                    },
-                  )
+              icon: Icon(Icons.clear, color: widget.primaryColor ?? Colors.black),
+              onPressed: () {
+                searchC.clear();
+                onItemChanged('');
+                setState(() {});
+              },
+            )
                 : null,
             hintText: widget.dropdownHintText ?? 'Search Here...',
             isDense: true,
@@ -394,7 +395,8 @@ class _CustomSearchableDropState extends State<CustomSearchableDrop> with Widget
     );
   }
 
-  InputBorder inputBorder() => OutlineInputBorder(
+  InputBorder inputBorder() =>
+      OutlineInputBorder(
         borderRadius: const BorderRadius.all(Radius.circular(5)),
         borderSide: BorderSide(color: widget.primaryColor ?? Colors.grey),
       );
@@ -405,78 +407,78 @@ class _CustomSearchableDropState extends State<CustomSearchableDrop> with Widget
       child: newDataList.isEmpty
           ? _buildEmptyState(setState)
           : ListView.builder(
-              padding: EdgeInsets.zero,
-              shrinkWrap: true, // Add shrinkWrap for proper sizing
-              itemCount: newDataList.length,
-              itemBuilder: (BuildContext context, int index) {
-                return TextButton(
-                  style: TextButton.styleFrom(foregroundColor: widget.primaryColor ?? Colors.black, padding: const EdgeInsets.all(8), tapTargetSize: MaterialTapTargetSize.shrinkWrap),
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-                    child: Row(
-                      children: [
-                        Visibility(
-                          visible: widget.multiSelect ?? false,
-                          child: SizedBox(
-                            width: 24,
-                            height: 24,
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
-                              child: Checkbox(
-                                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                  value: selectedValues.contains(newDataList[index]) ? true : false,
-                                  activeColor: Colors.green,
-                                  onChanged: (newValue) {
-                                    if (selectedValues.contains(newDataList[index])) {
-                                      setState(() {
-                                        selectedValues.remove(newDataList[index]);
-                                      });
-                                    } else {
-                                      setState(() {
-                                        selectedValues.add(newDataList[index]);
-                                      });
-                                    }
-                                  }),
-                            ),
-                          ),
+          padding: EdgeInsets.zero,
+          shrinkWrap: true, // Add shrinkWrap for proper sizing
+          itemCount: newDataList.length,
+          itemBuilder: (BuildContext context, int index) {
+            return TextButton(
+              style: TextButton.styleFrom(foregroundColor: widget.primaryColor ?? Colors.black, padding: const EdgeInsets.all(8), tapTargetSize: MaterialTapTargetSize.shrinkWrap),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                child: Row(
+                  children: [
+                    Visibility(
+                      visible: widget.multiSelect ?? false,
+                      child: SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
+                          child: Checkbox(
+                              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              value: selectedValues.contains(newDataList[index]) ? true : false,
+                              activeColor: Colors.green,
+                              onChanged: (newValue) {
+                                if (selectedValues.contains(newDataList[index])) {
+                                  setState(() {
+                                    selectedValues.remove(newDataList[index]);
+                                  });
+                                } else {
+                                  setState(() {
+                                    selectedValues.add(newDataList[index]);
+                                  });
+                                }
+                              }),
                         ),
-                        Expanded(
-                          child: Text(
-                            newDataList[index].split('-_-')[0].toString(),
-                            style: widget.dropdownItemStyle ?? TextStyle(color: Colors.grey[700]),
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
-                  onPressed: () {
-                    if (widget.multiSelect ?? false) {
-                      if (selectedValues.contains(newDataList[index])) {
-                        setState(() {
-                          selectedValues.remove(newDataList[index]);
-                        });
-                      } else {
-                        setState(() {
-                          selectedValues.add(newDataList[index]);
-                        });
-                      }
-                    } else {
-                      for (int i = 0; i < menuData.length; i++) {
-                        if (menuData[i] == newDataList[index]) {
-                          onSelectLabel = menuData[i].split('-_-')[0].toString();
-                          widget.onChanged(widget.items[i]);
-                        }
-                      }
-                      if (widget.menuMode ?? false) {
-                        _menuController.reverse();
-                      } else {
-                        Navigator.pop(context);
-                      }
+                    Expanded(
+                      child: Text(
+                        newDataList[index].split('-_-')[0].toString(),
+                        style: widget.dropdownItemStyle ?? TextStyle(color: Colors.grey[700]),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              onPressed: () {
+                if (widget.multiSelect ?? false) {
+                  if (selectedValues.contains(newDataList[index])) {
+                    setState(() {
+                      selectedValues.remove(newDataList[index]);
+                    });
+                  } else {
+                    setState(() {
+                      selectedValues.add(newDataList[index]);
+                    });
+                  }
+                } else {
+                  for (int i = 0; i < menuData.length; i++) {
+                    if (menuData[i] == newDataList[index]) {
+                      onSelectLabel = menuData[i].split('-_-')[0].toString();
+                      widget.onChanged(widget.items[i]);
                     }
-                    setState(() {});
-                  },
-                );
-              }),
+                  }
+                  if (widget.menuMode ?? false) {
+                    _menuController.reverse();
+                  } else {
+                    Navigator.pop(context);
+                  }
+                }
+                setState(() {});
+              },
+            );
+          }),
     );
   }
 
