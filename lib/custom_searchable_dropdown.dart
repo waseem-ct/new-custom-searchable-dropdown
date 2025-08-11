@@ -13,9 +13,9 @@ class CustomSearchableDropDown extends StatefulWidget {
   final Color? primaryColor;
   final Color? backgroundColor;
   final Color? dropdownBackgroundColor;
-  final EdgeInsetsGeometry? padding;
-  final EdgeInsetsGeometry? margin;
-  final EdgeInsetsGeometry? menuPadding;
+  final EdgeInsets? padding;
+  final EdgeInsets? margin;
+  final EdgeInsets? menuPadding;
   final String? label;
   final String? dropdownHintText;
   final TextStyle? labelStyle;
@@ -43,7 +43,7 @@ class CustomSearchableDropDown extends StatefulWidget {
   final String? emptySearchText;
   final Widget? emptySearchWidget;
 
-  CustomSearchableDrop({
+  CustomSearchableDropDown({
     required this.items,
     required this.label,
     required this.onChanged,
@@ -81,10 +81,10 @@ class CustomSearchableDropDown extends StatefulWidget {
   });
 
   @override
-  _CustomSearchableDropState createState() => _CustomSearchableDropState();
+  _CustomSearchableDropDownState createState() => _CustomSearchableDropDownState();
 }
 
-class _CustomSearchableDropState extends State<CustomSearchableDrop> with WidgetsBindingObserver, TickerProviderStateMixin {
+class _CustomSearchableDropDownState extends State<CustomSearchableDropDown> with WidgetsBindingObserver, TickerProviderStateMixin {
   String onSelectLabel = '';
   final searchC = TextEditingController();
   List menuData = [];
