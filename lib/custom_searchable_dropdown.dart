@@ -44,7 +44,6 @@ class CustomSearchableDropDown extends StatefulWidget {
   final Widget? emptySearchWidget;
 
   const CustomSearchableDropDown({
-    super.key,
     required this.items,
     required this.label,
     required this.onChanged,
