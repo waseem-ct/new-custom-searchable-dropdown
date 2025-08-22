@@ -43,7 +43,8 @@ class CustomSearchableDropDown extends StatefulWidget {
   final String? emptySearchText;
   final Widget? emptySearchWidget;
 
-  CustomSearchableDropDown({
+  const CustomSearchableDropDown({
+    super.key,
     required this.items,
     required this.label,
     required this.onChanged,
@@ -86,67 +87,71 @@ class CustomSearchableDropDown extends StatefulWidget {
 
 class _CustomSearchableDropDownState extends State<CustomSearchableDropDown> with WidgetsBindingObserver, TickerProviderStateMixin {
   String onSelectLabel = '';
-  final searchC = TextEditingController();
   List menuData = [];
-  List mainDataListGroup = [];
   List newDataList = [];
-
   List selectedValues = [];
-
+  List mainDataListGroup = [];
   late AnimationController _menuController;
+  final searchC = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _menuController = AnimationController(duration: const Duration(milliseconds: 300), vsync: this);
+    WidgetsBinding.instance.addPostFrameCallback((_) => _initializeSelection());
+  }
+
+  @override
+  void didUpdateWidget(covariant CustomSearchableDropDown oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.items != widget.items || oldWidget.initialValue != widget.initialValue) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _initializeSelection());
+    }
+  }
+
+  void _initializeSelection() {
+    if (widget.items.isEmpty || widget.dropDownMenuItems.isEmpty) {
+      onSelectLabel = '';
+      selectedValues.clear();
+      return;
+    }
+    if (widget.multiSelect ?? false) {
+      selectedValues.clear();
+      if (widget.initialValue != null && widget.initialValue!.isNotEmpty) {
+        for (int i = 0; i < widget.items.length; i++) {
+          for (int j = 0; j < widget.initialValue!.length; j++) {
+            final param = widget.initialValue![j]['parameter'];
+            final val = widget.initialValue![j]['value'];
+            if (param != null && val != null) {
+              if (val == widget.items[i][param]) {
+                selectedValues.add('${widget.dropDownMenuItems[i]}-_-$i');
+              }
+            }
+          }
+        }
+      }
+      if (mounted) setState(() {});
+      return;
+    }
+    if (onSelectLabel.isEmpty) {
+      if (widget.initialValue != null && widget.initialValue!.isNotEmpty) {
+        final param = widget.initialValue![0]['parameter'];
+        final val = widget.initialValue![0]['value'];
+        if (param != null && val != null) {
+          for (int i = 0; i < widget.items.length; i++) {
+            if (val == widget.items[i][param]) {
+              onSelectLabel = widget.dropDownMenuItems[i].toString();
+              break;
+            }
+          }
+        }
+      }
+      if (mounted) setState(() {});
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (widget.initialIndex != null && widget.dropDownMenuItems.isNotEmpty) {
-      onSelectLabel = widget.dropDownMenuItems[widget.initialIndex!].toString();
-    }
-
-    if (widget.multiSelect ?? false) {
-      if (selectedValues.isEmpty) {
-        if (widget.initialValue != null && widget.items.isNotEmpty) {
-          if (widget.initialValue != null && widget.initialValue!.isNotEmpty) {
-            selectedValues.clear();
-          }
-
-          for (int i = 0; i < widget.items.length; i++) {
-            for (int j = 0; j < widget.initialValue!.length; j++) {
-              if (widget.initialValue != null && widget.initialValue!.isNotEmpty) {
-                if (widget.initialValue![j]['value'] == widget.items[i][widget.initialValue![j]['parameter']]) {
-                  selectedValues.add('${widget.dropDownMenuItems[i]}-_-$i');
-                  setState(() {});
-                }
-              }
-            }
-          }
-        }
-      }
-    } else {
-      if (onSelectLabel == '') {
-        if (widget.initialValue != null && widget.items.isNotEmpty) {
-          for (int i = 0; i < widget.items.length; i++) {
-            if (widget.initialValue != null && widget.initialValue!.isNotEmpty) {
-              if (widget.initialValue![0]['value'] == widget.items[i][widget.initialValue![0]['parameter']]) {
-                onSelectLabel = widget.dropDownMenuItems[i].toString();
-                setState(() {});
-              }
-            }
-          }
-        }
-      }
-    }
-
-    if (widget.items.isEmpty) {
-      onSelectLabel = '';
-      selectedValues.clear();
-      widget.onChanged(null);
-      setState(() {});
-    }
     return Padding(
       padding: widget.margin ?? const EdgeInsets.all(8.0),
       child: Column(
@@ -244,17 +249,13 @@ class _CustomSearchableDropDownState extends State<CustomSearchableDropDown> wit
     );
   }
 
-  Widget _showMenuMode() {
-    return SizeTransition(sizeFactor: _menuController, child: mainScreen(setState));
-  }
+  Widget _showMenuMode() => SizeTransition(sizeFactor: _menuController, child: mainScreen(setState));
 
   Future<void> showDialogueBox(context) async {
     await showDialog(
         context: context,
         barrierDismissible: true,
-        builder: (dialogContext) => Dialog(insetPadding: const EdgeInsets.all(18), child: StatefulBuilder(builder: (context, localSetState) => mainScreen(localSetState)))).then((valueFromDialog) {
-      setState(() {});
-    });
+        builder: (dialogContext) => Dialog(insetPadding: const EdgeInsets.all(18), child: StatefulBuilder(builder: (context, localSetState) => mainScreen(localSetState)))).then((valueFromDialog) {});
   }
 
   // Updated mainScreen with proper height handling
@@ -374,13 +375,13 @@ class _CustomSearchableDropDownState extends State<CustomSearchableDropDown> wit
             // Added clear button that appears when there's text
             suffixIcon: searchC.text.isNotEmpty
                 ? IconButton(
-              icon: Icon(Icons.clear, color: widget.primaryColor ?? Colors.black),
-              onPressed: () {
-                searchC.clear();
-                onItemChanged('');
-                setState(() {});
-              },
-            )
+                    icon: Icon(Icons.clear, color: widget.primaryColor ?? Colors.black),
+                    onPressed: () {
+                      searchC.clear();
+                      onItemChanged('');
+                      setState(() {});
+                    },
+                  )
                 : null,
             hintText: widget.dropdownHintText ?? 'Search Here...',
             isDense: true,
@@ -394,11 +395,7 @@ class _CustomSearchableDropDownState extends State<CustomSearchableDropDown> wit
     );
   }
 
-  InputBorder inputBorder() =>
-      OutlineInputBorder(
-        borderRadius: const BorderRadius.all(Radius.circular(5)),
-        borderSide: BorderSide(color: widget.primaryColor ?? Colors.grey),
-      );
+  InputBorder inputBorder() => OutlineInputBorder(borderRadius: const BorderRadius.all(Radius.circular(5)), borderSide: BorderSide(color: widget.primaryColor ?? Colors.grey));
 
   // Updated mainList method
   mainList(setState) {
@@ -406,103 +403,82 @@ class _CustomSearchableDropDownState extends State<CustomSearchableDropDown> wit
       child: newDataList.isEmpty
           ? _buildEmptyState(setState)
           : ListView.builder(
-          padding: EdgeInsets.zero,
-          shrinkWrap: true, // Add shrinkWrap for proper sizing
-          itemCount: newDataList.length,
-          itemBuilder: (BuildContext context, int index) {
-            return TextButton(
-              style: TextButton.styleFrom(foregroundColor: widget.primaryColor ?? Colors.black, padding: const EdgeInsets.all(8), tapTargetSize: MaterialTapTargetSize.shrinkWrap),
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-                child: Row(
-                  children: [
-                    Visibility(
-                      visible: widget.multiSelect ?? false,
-                      child: SizedBox(
-                        width: 24,
-                        height: 24,
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
-                          child: Checkbox(
-                              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                              value: selectedValues.contains(newDataList[index]) ? true : false,
-                              activeColor: Colors.green,
-                              onChanged: (newValue) {
-                                if (selectedValues.contains(newDataList[index])) {
-                                  setState(() {
-                                    selectedValues.remove(newDataList[index]);
-                                  });
-                                } else {
-                                  setState(() {
-                                    selectedValues.add(newDataList[index]);
-                                  });
-                                }
-                              }),
+              padding: EdgeInsets.zero,
+              shrinkWrap: true, // Add shrinkWrap for proper sizing
+              itemCount: newDataList.length,
+              itemBuilder: (BuildContext context, int index) {
+                return TextButton(
+                  style: TextButton.styleFrom(foregroundColor: widget.primaryColor ?? Colors.black, padding: const EdgeInsets.all(8), tapTargetSize: MaterialTapTargetSize.shrinkWrap),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                    child: Row(
+                      children: [
+                        Visibility(
+                          visible: widget.multiSelect ?? false,
+                          child: SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
+                              child: Checkbox(
+                                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                  value: selectedValues.contains(newDataList[index]) ? true : false,
+                                  activeColor: Colors.green,
+                                  onChanged: (newValue) {
+                                    if (selectedValues.contains(newDataList[index])) {
+                                      setState(() => selectedValues.remove(newDataList[index]));
+                                    } else {
+                                      setState(() => selectedValues.add(newDataList[index]));
+                                    }
+                                  }),
+                            ),
+                          ),
                         ),
-                      ),
+                        Expanded(
+                          child: Text(newDataList[index].split('-_-')[0].toString(), style: widget.dropdownItemStyle ?? TextStyle(color: Colors.grey[700])),
+                        ),
+                      ],
                     ),
-                    Expanded(
-                      child: Text(
-                        newDataList[index].split('-_-')[0].toString(),
-                        style: widget.dropdownItemStyle ?? TextStyle(color: Colors.grey[700]),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              onPressed: () {
-                if (widget.multiSelect ?? false) {
-                  if (selectedValues.contains(newDataList[index])) {
-                    setState(() {
-                      selectedValues.remove(newDataList[index]);
-                    });
-                  } else {
-                    setState(() {
-                      selectedValues.add(newDataList[index]);
-                    });
-                  }
-                } else {
-                  for (int i = 0; i < menuData.length; i++) {
-                    if (menuData[i] == newDataList[index]) {
-                      onSelectLabel = menuData[i].split('-_-')[0].toString();
-                      widget.onChanged(widget.items[i]);
+                  ),
+                  onPressed: () {
+                    if (widget.multiSelect ?? false) {
+                      if (selectedValues.contains(newDataList[index])) {
+                        setState(() => selectedValues.remove(newDataList[index]));
+                      } else {
+                        setState(() => selectedValues.add(newDataList[index]));
+                      }
+                    } else {
+                      for (int i = 0; i < menuData.length; i++) {
+                        if (menuData[i] == newDataList[index]) {
+                          onSelectLabel = menuData[i].split('-_-')[0].toString();
+                          widget.onChanged(widget.items[i]);
+                        }
+                      }
+                      if (widget.menuMode ?? false) {
+                        _menuController.reverse();
+                      } else {
+                        Navigator.pop(context);
+                      }
                     }
-                  }
-                  if (widget.menuMode ?? false) {
-                    _menuController.reverse();
-                  } else {
-                    Navigator.pop(context);
-                  }
-                }
-                setState(() {});
-              },
-            );
-          }),
+                    setState(() {});
+                  },
+                );
+              }),
     );
   }
 
   // Build empty state widget
   Widget _buildEmptyState(setState) {
-    FocusScope.of(context).unfocus();
     if (widget.emptySearchWidget != null) {
       return widget.emptySearchWidget!;
     }
-
     return Center(
       child: Column(
         spacing: 10,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            widget.emptySearchText ?? 'No results found',
-            style: TextStyle(color: Colors.grey[600], fontSize: 16),
-            textAlign: TextAlign.center,
-          ),
-          Text(
-            'Try adjusting your search terms',
-            style: TextStyle(color: Colors.grey[500], fontSize: 14),
-            textAlign: TextAlign.center,
-          ),
+          Text(widget.emptySearchText ?? 'No results found', style: TextStyle(color: Colors.grey[600], fontSize: 16), textAlign: TextAlign.center),
+          Text('Try adjusting your search terms', style: TextStyle(color: Colors.grey[500], fontSize: 14), textAlign: TextAlign.center),
           IconButton(
             icon: Text("Clear Search", style: TextStyle(fontWeight: FontWeight.bold, color: widget.primaryColor ?? Colors.green)),
             onPressed: () {
@@ -519,3 +495,4 @@ class _CustomSearchableDropDownState extends State<CustomSearchableDropDown> wit
 
   onItemChanged(String value) => setState(() => newDataList = mainDataListGroup.where((string) => string.toLowerCase().contains(value.toLowerCase())).toList());
 }
+
