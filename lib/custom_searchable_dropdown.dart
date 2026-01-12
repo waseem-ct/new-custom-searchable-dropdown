@@ -490,26 +490,28 @@ class _CustomSearchableDropDownState extends State<CustomSearchableDropDown> wit
     }
   }
 
+
   Widget _buildDropdownItem(int index) {
     final item = newDataList[index];
     final isSelected = selectedValues.contains(item);
     final label = item.split('-_-')[0];
-    return InkWell(
-      onTap: () => _handleSelection(index),
-      child: CheckboxListTile(
-        dense: true,
-        contentPadding: EdgeInsets.zero,
-        visualDensity: VisualDensity.compact,
-        controlAffinity: ListTileControlAffinity.leading,
-        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        activeColor: Colors.green,
-        value: widget.multiSelect == true ? isSelected : false,
-        onChanged: widget.multiSelect == true ? (_) => _toggleMultiSelect(item) : null,
-        title: Text(label, style: widget.dropdownItemStyle ?? TextStyle(color: Colors.grey[700])),
-      ),
+    return ListTile(
+      dense: true,
+      visualDensity: VisualDensity.compact,
+      contentPadding: const EdgeInsets.only(left: 5),
+      onTap: () {
+        if (widget.multiSelect == true) {
+          _toggleMultiSelect(item);
+        } else {
+          _handleSelection(index);
+        }
+      },
+      leading: widget.multiSelect == true
+          ? Icon(isSelected ? Icons.check_box_sharp : Icons.check_box_outline_blank_sharp, color: isSelected ? (widget.primaryColor ?? Colors.green) : null, size: 22)
+          : null,
+      title: Text(label, style: widget.dropdownItemStyle ?? TextStyle(color: Colors.grey[700])),
     );
   }
-
   void _toggleMultiSelect(String item) {
     setState(() {
       if (selectedValues.contains(item)) {
