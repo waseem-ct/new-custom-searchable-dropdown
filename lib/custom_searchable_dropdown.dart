@@ -498,7 +498,7 @@ class _CustomSearchableDropDownState extends State<CustomSearchableDropDown> wit
     return ListTile(
       dense: true,
       visualDensity: VisualDensity.compact,
-      contentPadding: const EdgeInsets.only(left: 5),
+      //contentPadding: const EdgeInsets.only(left: 5),
       onTap: () {
         if (widget.multiSelect == true) {
           _toggleMultiSelect(item);
