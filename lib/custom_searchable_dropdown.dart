@@ -148,6 +148,11 @@ class _CustomSearchableDropDownState extends State<CustomSearchableDropDown> wit
       if (mounted) setState(() {});
     }
   }
+  @override
+  void dispose() {
+    _menuController.dispose(); // ✅ sabse pehle
+    super.dispose();       // ✅ last me
+  }
 
   @override
   Widget build(BuildContext context) {
