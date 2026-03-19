@@ -108,7 +108,79 @@ class _CustomSearchableDropDownState extends State<CustomSearchableDropDown> wit
     }
   }
 
+  
+// ─────────────────────────────────────────────────────────────────────────────
+//  CORRECTED FIX for _initializeSelection()
+//
+//  Two separate problems were happening:
+//
+//  1. CLEAR not working  → initialValue becomes null but onSelectLabel was
+//     never reset because the old code only entered the block when isEmpty.
+//
+//  2. SELECTION not holding → my previous fix added `onSelectLabel = ''`
+//     before the match loop, so every didUpdateWidget call (including the one
+//     right after the user taps an item) wiped the label before it could be
+//     re-derived — and since `initialValue` uses `parameter:'typeId'` but the
+//     map has key `problemId`, the match never found anything, leaving it blank.
+//
+//  RULE:
+//   • initialValue == null/empty  → always clear (handles the clear-button case)
+//   • initialValue != null        → only set label if onSelectLabel is still
+//                                   empty (handles pre-selection on first load)
+//                                   and PRESERVE it if already set by user tap
+// ─────────────────────────────────────────────────────────────────────────────
+
   void _initializeSelection() {
+    if (widget.items.isEmpty || widget.dropDownMenuItems.isEmpty) {
+      onSelectLabel = '';
+      selectedValues.clear();
+      return;
+    }
+
+    // ✅ FIX 1: initialValue was cleared externally → reset the displayed label
+    if (widget.initialValue == null || widget.initialValue!.isEmpty) {
+      onSelectLabel = '';
+      selectedValues.clear();
+      if (mounted) setState(() {});
+      return;
+    }
+
+    // ── Multi-select path (unchanged) ────────────────────────────────────────
+    if (widget.multiSelect ?? false) {
+      selectedValues.clear();
+      for (int i = 0; i < widget.items.length; i++) {
+        for (int j = 0; j < widget.initialValue!.length; j++) {
+          final param = widget.initialValue![j]['parameter'];
+          final val   = widget.initialValue![j]['value'];
+          if (param != null && val != null && val == widget.items[i][param]) {
+            selectedValues.add('${widget.dropDownMenuItems[i]}-_-$i');
+          }
+        }
+      }
+      if (mounted) setState(() {});
+      return;
+    }
+
+    // ── Single-select path ───────────────────────────────────────────────────
+    // ✅ FIX 2: keep the `if (onSelectLabel.isEmpty)` guard so that a label
+    //    already written by _handleSelection (user tap) is NOT overwritten.
+    //    The clear-case is already handled above, so reaching here with a
+    //    non-empty onSelectLabel means the user has actively selected an item.
+    if (onSelectLabel.isEmpty) {
+      final param = widget.initialValue![0]['parameter'];
+      final val   = widget.initialValue![0]['value'];
+      if (param != null && val != null) {
+        for (int i = 0; i < widget.items.length; i++) {
+          if (val == widget.items[i][param]) {
+            onSelectLabel = widget.dropDownMenuItems[i].toString();
+            break;
+          }
+        }
+      }
+      if (mounted) setState(() {});
+    }
+  }
+  void _initializeSelectionOld() {
     if (widget.items.isEmpty || widget.dropDownMenuItems.isEmpty) {
       onSelectLabel = '';
       selectedValues.clear();
@@ -150,8 +222,8 @@ class _CustomSearchableDropDownState extends State<CustomSearchableDropDown> wit
   }
   @override
   void dispose() {
-    _menuController.dispose(); // ✅ sabse pehle
-    super.dispose();       // ✅ last me
+    _menuController.dispose(); 
+    super.dispose();       
   }
 
   @override
