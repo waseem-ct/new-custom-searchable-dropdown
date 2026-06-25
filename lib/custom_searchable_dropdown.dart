@@ -386,7 +386,6 @@ class _CustomSearchableDropDownState extends State<CustomSearchableDropDown> wit
         child: TextField(
           controller: searchC,
           decoration: InputDecoration(
-            fillColor: context.theme.scaffoldBackgroundColor,
             filled: true,
             focusedBorder: inputBorder(),
             enabledBorder: inputBorder(),
