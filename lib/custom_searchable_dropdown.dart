@@ -5,6 +5,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+
 class CustomSearchableDropDown extends StatefulWidget {
   final List items;
   final List? initialValue;
@@ -44,6 +45,7 @@ class CustomSearchableDropDown extends StatefulWidget {
   final Widget? emptySearchWidget;
 
   const CustomSearchableDropDown({
+    super.key,
     required this.items,
     required this.label,
     required this.onChanged,
@@ -108,7 +110,6 @@ class _CustomSearchableDropDownState extends State<CustomSearchableDropDown> wit
     }
   }
 
-  
 // ─────────────────────────────────────────────────────────────────────────────
 //  CORRECTED FIX for _initializeSelection()
 //
@@ -151,7 +152,7 @@ class _CustomSearchableDropDownState extends State<CustomSearchableDropDown> wit
       for (int i = 0; i < widget.items.length; i++) {
         for (int j = 0; j < widget.initialValue!.length; j++) {
           final param = widget.initialValue![j]['parameter'];
-          final val   = widget.initialValue![j]['value'];
+          final val = widget.initialValue![j]['value'];
           if (param != null && val != null && val == widget.items[i][param]) {
             selectedValues.add('${widget.dropDownMenuItems[i]}-_-$i');
           }
@@ -168,7 +169,7 @@ class _CustomSearchableDropDownState extends State<CustomSearchableDropDown> wit
     //    non-empty onSelectLabel means the user has actively selected an item.
     if (onSelectLabel.isEmpty) {
       final param = widget.initialValue![0]['parameter'];
-      final val   = widget.initialValue![0]['value'];
+      final val = widget.initialValue![0]['value'];
       if (param != null && val != null) {
         for (int i = 0; i < widget.items.length; i++) {
           if (val == widget.items[i][param]) {
@@ -180,50 +181,11 @@ class _CustomSearchableDropDownState extends State<CustomSearchableDropDown> wit
       if (mounted) setState(() {});
     }
   }
-  void _initializeSelectionOld() {
-    if (widget.items.isEmpty || widget.dropDownMenuItems.isEmpty) {
-      onSelectLabel = '';
-      selectedValues.clear();
-      return;
-    }
-    if (widget.multiSelect ?? false) {
-      selectedValues.clear();
-      if (widget.initialValue != null && widget.initialValue!.isNotEmpty) {
-        for (int i = 0; i < widget.items.length; i++) {
-          for (int j = 0; j < widget.initialValue!.length; j++) {
-            final param = widget.initialValue![j]['parameter'];
-            final val = widget.initialValue![j]['value'];
-            if (param != null && val != null) {
-              if (val == widget.items[i][param]) {
-                selectedValues.add('${widget.dropDownMenuItems[i]}-_-$i');
-              }
-            }
-          }
-        }
-      }
-      if (mounted) setState(() {});
-      return;
-    }
-    if (onSelectLabel.isEmpty) {
-      if (widget.initialValue != null && widget.initialValue!.isNotEmpty) {
-        final param = widget.initialValue![0]['parameter'];
-        final val = widget.initialValue![0]['value'];
-        if (param != null && val != null) {
-          for (int i = 0; i < widget.items.length; i++) {
-            if (val == widget.items[i][param]) {
-              onSelectLabel = widget.dropDownMenuItems[i].toString();
-              break;
-            }
-          }
-        }
-      }
-      if (mounted) setState(() {});
-    }
-  }
+
   @override
   void dispose() {
-    _menuController.dispose(); 
-    super.dispose();       
+    _menuController.dispose();
+    super.dispose();
   }
 
   @override
@@ -235,12 +197,12 @@ class _CustomSearchableDropDownState extends State<CustomSearchableDropDown> wit
           Stack(
             children: [
               Material(
-                shape: ContinuousRectangleBorder(borderRadius: BorderRadius.circular(15), side: BorderSide(color: widget.primaryColor ?? Colors.grey, width: 1)),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5), side: BorderSide(color: widget.primaryColor ?? Colors.grey, width: 1)),
                 color: widget.backgroundColor ?? Colors.white,
                 child: ListTile(
                   dense: true,
                   visualDensity: VisualDensity.compact,
-                  shape: ContinuousRectangleBorder(borderRadius: BorderRadius.circular(15), side: BorderSide(color: widget.primaryColor ?? Colors.grey, width: 1)),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5), side: BorderSide(color: widget.primaryColor ?? Colors.grey, width: 1)),
                   contentPadding: widget.padding ?? const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
                   tileColor: widget.backgroundColor ?? Colors.white,
                   leading: widget.prefixIcon ?? const SizedBox(),
@@ -327,114 +289,18 @@ class _CustomSearchableDropDownState extends State<CustomSearchableDropDown> wit
 
   Widget _showMenuMode() => SizeTransition(sizeFactor: _menuController, child: mainScreen(setState));
 
-  Future<void> showDialogueBox(context) async {
+  Future<void> showDialogueBox(BuildContext context) async {
     await showDialog(
-            context: context,
-            barrierDismissible: true,
-            builder: (dialogContext) => Dialog(insetPadding: const EdgeInsets.all(18), child: StatefulBuilder(builder: (context, localSetState) => mainScreen(localSetState))))
-        .then((valueFromDialog) {});
+        context: context,
+        barrierDismissible: true,
+        builder: (dialogContext) => Dialog(
+            clipBehavior: Clip.hardEdge,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)), // ← ADD THIS
+            insetPadding: const EdgeInsets.all(18),
+            child: StatefulBuilder(builder: (context, localSetState) => mainScreen(localSetState)))).then((valueFromDialog) {});
   }
 
   // Updated mainScreen with proper height handling
-  _mainScreenOld(setState) {
-    return Container(
-      height: widget.menuHeight,
-      width: double.infinity,
-      padding: widget.menuPadding ?? (widget.menuMode ?? false ? EdgeInsets.zero : const EdgeInsets.all(10)),
-      decoration: widget.decoration ?? BoxDecoration(color: widget.dropdownBackgroundColor ?? Colors.white, borderRadius: BorderRadius.circular(10)),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min, // Key: minimize column size
-          children: [
-            Visibility(
-                visible: ((widget.showLabelInMenu ?? false) && widget.label != null),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    widget.label.toString(),
-                    style: widget.labelStyle != null ? widget.labelStyle!.copyWith(color: widget.primaryColor ?? Colors.blue) : TextStyle(color: widget.primaryColor ?? Colors.blue),
-                  ),
-                )),
-            Visibility(
-                visible: widget.multiSelect ?? false,
-                child: Row(
-                  children: [
-                    TextButton(
-                      style: TextButton.styleFrom(foregroundColor: widget.primaryColor ?? Colors.black, tapTargetSize: MaterialTapTargetSize.shrinkWrap),
-                      child: Text(
-                        'Select All',
-                        style: widget.labelStyle != null ? widget.labelStyle!.copyWith(color: widget.primaryColor ?? Colors.blue) : TextStyle(color: widget.primaryColor ?? Colors.blue),
-                      ),
-                      onPressed: () {
-                        selectedValues.clear();
-                        for (int i = 0; i < newDataList.length; i++) {
-                          selectedValues.add(newDataList[i]);
-                        }
-                        setState(() {});
-                      },
-                    ),
-                    TextButton(
-                      style: TextButton.styleFrom(foregroundColor: widget.primaryColor ?? Colors.black, tapTargetSize: MaterialTapTargetSize.shrinkWrap),
-                      child: Text(
-                        'Clear All',
-                        style: widget.labelStyle != null ? widget.labelStyle!.copyWith(color: widget.primaryColor ?? Colors.blue) : TextStyle(color: widget.primaryColor ?? Colors.blue),
-                      ),
-                      onPressed: () => setState(() => selectedValues.clear()),
-                    ),
-                  ],
-                )),
-            Visibility(visible: !(widget.menuMode ?? false), child: searchBox(setState)),
-            (widget.menuMode ?? false) ? SizedBox(height: widget.menuHeight ?? 300, child: mainList(setState)) : Expanded(child: mainList(setState)),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                TextButton(
-                  style: TextButton.styleFrom(foregroundColor: widget.primaryColor ?? Colors.black, tapTargetSize: MaterialTapTargetSize.shrinkWrap),
-                  child: Text('Close',
-                      style: widget.labelStyle != null ? widget.labelStyle!.copyWith(color: widget.primaryColor ?? Colors.blue) : TextStyle(color: widget.primaryColor ?? Colors.blue)),
-                  onPressed: () {
-                    if (widget.menuMode ?? false) {
-                      _menuController.reverse();
-                    } else {
-                      Navigator.pop(context);
-                    }
-                    setState(() {});
-                  },
-                ),
-                Visibility(
-                  visible: (widget.multiSelect ?? false),
-                  child: TextButton(
-                    style: TextButton.styleFrom(foregroundColor: widget.primaryColor ?? Colors.black, tapTargetSize: MaterialTapTargetSize.shrinkWrap),
-                    child: Text(
-                      'Done',
-                      style: widget.labelStyle != null ? widget.labelStyle!.copyWith(color: widget.primaryColor ?? Colors.blue) : TextStyle(color: widget.primaryColor ?? Colors.blue),
-                    ),
-                    onPressed: () {
-                      var sendList = [];
-                      for (int i = 0; i < menuData.length; i++) {
-                        if (selectedValues.contains(menuData[i])) {
-                          sendList.add(widget.items[i]);
-                        }
-                      }
-                      widget.onChanged(jsonEncode(sendList));
-                      if (widget.menuMode ?? false) {
-                        _menuController.reverse();
-                      } else {
-                        Navigator.pop(context);
-                      }
-                      setState(() {});
-                    },
-                  ),
-                )
-              ],
-            )
-          ],
-        ),
-      ),
-    );
-  }
 
   Widget mainScreen(StateSetter setState) {
     final isMulti = widget.multiSelect ?? false;
@@ -442,11 +308,7 @@ class _CustomSearchableDropDownState extends State<CustomSearchableDropDown> wit
     return Container(
       width: double.infinity,
       padding: widget.menuPadding ?? ((widget.menuMode ?? false) ? EdgeInsets.zero : const EdgeInsets.all(10)),
-      decoration: widget.decoration ??
-          BoxDecoration(
-            color: widget.dropdownBackgroundColor ?? Colors.white,
-            borderRadius: BorderRadius.circular(10),
-          ),
+      decoration: widget.decoration ?? BoxDecoration(color: widget.dropdownBackgroundColor ?? Colors.white, borderRadius: BorderRadius.circular(25)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
@@ -476,11 +338,10 @@ class _CustomSearchableDropDownState extends State<CustomSearchableDropDown> wit
     return Row(
       children: [
         TextButton(
-          onPressed: () => setState(() => selectedValues
-            ..clear()
-            ..addAll(newDataList)),
-          child: const Text('Select All'),
-        ),
+            onPressed: () => setState(() => selectedValues
+              ..clear()
+              ..addAll(newDataList)),
+            child: const Text('Select All')),
         TextButton(onPressed: () => setState(selectedValues.clear), child: const Text('Clear All')),
       ],
     );
@@ -517,7 +378,7 @@ class _CustomSearchableDropDownState extends State<CustomSearchableDropDown> wit
   }
 
   // Updated searchBox with clear button
-  searchBox(setState) {
+  Visibility searchBox(dynamic setState) {
     return Visibility(
       visible: widget.hideSearch == null ? true : !widget.hideSearch!,
       child: SizedBox(
@@ -525,7 +386,7 @@ class _CustomSearchableDropDownState extends State<CustomSearchableDropDown> wit
         child: TextField(
           controller: searchC,
           decoration: InputDecoration(
-            fillColor: Colors.white,
+            fillColor: context.theme.scaffoldBackgroundColor,
             filled: true,
             focusedBorder: inputBorder(),
             enabledBorder: inputBorder(),
@@ -556,17 +417,16 @@ class _CustomSearchableDropDownState extends State<CustomSearchableDropDown> wit
     );
   }
 
-  InputBorder inputBorder() => OutlineInputBorder(borderRadius: const BorderRadius.all(Radius.circular(5)), borderSide: BorderSide(color: widget.primaryColor ?? Colors.grey));
+  InputBorder inputBorder() => OutlineInputBorder(borderRadius: const BorderRadius.all(Radius.circular(8)), borderSide: BorderSide(color: widget.primaryColor ?? Colors.grey));
 
   // Updated mainList method
-  Widget mainList(setState) {
+  Widget mainList(dynamic setState) {
     if (newDataList.isEmpty) {
       return _buildEmptyState(setState);
     } else {
       return Scrollbar(child: ListView.builder(shrinkWrap: true, itemCount: newDataList.length, itemBuilder: (context, int index) => _buildDropdownItem(index)));
     }
   }
-
 
   Widget _buildDropdownItem(int index) {
     final item = newDataList[index];
@@ -589,6 +449,7 @@ class _CustomSearchableDropDownState extends State<CustomSearchableDropDown> wit
       title: Text(label, style: widget.dropdownItemStyle ?? TextStyle(color: Colors.grey[700])),
     );
   }
+
   void _toggleMultiSelect(String item) {
     setState(() {
       if (selectedValues.contains(item)) {
@@ -620,7 +481,7 @@ class _CustomSearchableDropDownState extends State<CustomSearchableDropDown> wit
   }
 
   // Build empty state widget
-  Widget _buildEmptyState(setState) {
+  Widget _buildEmptyState(dynamic setState) {
     if (widget.emptySearchWidget != null) {
       return widget.emptySearchWidget!;
     }
@@ -645,5 +506,6 @@ class _CustomSearchableDropDownState extends State<CustomSearchableDropDown> wit
     );
   }
 
-  onItemChanged(String value) => setState(() => newDataList = mainDataListGroup.where((string) => string.toLowerCase().contains(value.toLowerCase())).toList());
+  void onItemChanged(String value) => setState(() => newDataList = mainDataListGroup.where((string) => string.toLowerCase().contains(value.toLowerCase())).toList());
 }
+
