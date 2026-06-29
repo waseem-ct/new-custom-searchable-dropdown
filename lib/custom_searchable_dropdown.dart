@@ -5,13 +5,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-library custom_searchable_dropdown;
-
-import 'dart:convert';
-import 'dart:math';
-
-import 'package:flutter/material.dart';
-
 
 class CustomSearchableDropDown extends StatefulWidget {
   final List items;
