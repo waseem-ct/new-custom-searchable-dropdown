@@ -5,6 +5,13 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+library custom_searchable_dropdown;
+
+import 'dart:convert';
+import 'dart:math';
+
+import 'package:flutter/material.dart';
+
 
 class CustomSearchableDropDown extends StatefulWidget {
   final List items;
@@ -44,6 +51,10 @@ class CustomSearchableDropDown extends StatefulWidget {
   final String? emptySearchText;
   final Widget? emptySearchWidget;
 
+  // NEW: configurable border radius + dedicated fill color for the search field
+  final double? borderRadius;
+  final Color? fillColor;
+
   const CustomSearchableDropDown({
     required this.items,
     required this.label,
@@ -79,6 +90,8 @@ class CustomSearchableDropDown extends StatefulWidget {
     this.emptySearchText,
     this.emptySearchWidget,
     this.minLeadingWidth,
+    this.borderRadius,
+    this.fillColor,
   });
 
   @override
@@ -196,12 +209,12 @@ class _CustomSearchableDropDownState extends State<CustomSearchableDropDown> wit
           Stack(
             children: [
               Material(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5), side: BorderSide(color: widget.primaryColor ?? Colors.grey, width: 1)),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(widget.borderRadius ?? 5), side: BorderSide(color: widget.primaryColor ?? Colors.grey, width: 1)),
                 color: widget.backgroundColor ?? Colors.white,
                 child: ListTile(
                   dense: true,
                   visualDensity: VisualDensity.compact,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5), side: BorderSide(color: widget.primaryColor ?? Colors.grey, width: 1)),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(widget.borderRadius ?? 5), side: BorderSide(color: widget.primaryColor ?? Colors.grey, width: 1)),
                   contentPadding: widget.padding ?? const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
                   tileColor: widget.backgroundColor ?? Colors.white,
                   leading: widget.prefixIcon ?? const SizedBox(),
@@ -294,7 +307,7 @@ class _CustomSearchableDropDownState extends State<CustomSearchableDropDown> wit
         barrierDismissible: true,
         builder: (dialogContext) => Dialog(
             clipBehavior: Clip.hardEdge,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)), // ← ADD THIS
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(widget.borderRadius ?? 15)), // ← ADD THIS
             insetPadding: const EdgeInsets.all(18),
             child: StatefulBuilder(builder: (context, localSetState) => mainScreen(localSetState)))).then((valueFromDialog) {});
   }
@@ -307,7 +320,7 @@ class _CustomSearchableDropDownState extends State<CustomSearchableDropDown> wit
     return Container(
       width: double.infinity,
       padding: widget.menuPadding ?? ((widget.menuMode ?? false) ? EdgeInsets.zero : const EdgeInsets.all(10)),
-      decoration: widget.decoration ?? BoxDecoration(color: widget.dropdownBackgroundColor ?? Colors.white, borderRadius: BorderRadius.circular(25)),
+      decoration: widget.decoration ?? BoxDecoration(color: widget.dropdownBackgroundColor ?? Colors.white, borderRadius: BorderRadius.circular(widget.borderRadius ?? 25)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
@@ -385,6 +398,8 @@ class _CustomSearchableDropDownState extends State<CustomSearchableDropDown> wit
         child: TextField(
           controller: searchC,
           decoration: InputDecoration(
+            // NEW: dedicated fill color, falls back to backgroundColor so existing usages are unaffected
+            fillColor: widget.fillColor ?? widget.backgroundColor,
             filled: true,
             focusedBorder: inputBorder(),
             enabledBorder: inputBorder(),
@@ -415,7 +430,7 @@ class _CustomSearchableDropDownState extends State<CustomSearchableDropDown> wit
     );
   }
 
-  InputBorder inputBorder() => OutlineInputBorder(borderRadius: const BorderRadius.all(Radius.circular(8)), borderSide: BorderSide(color: widget.primaryColor ?? Colors.grey));
+  InputBorder inputBorder() => OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(widget.borderRadius ?? 8)), borderSide: BorderSide(color: widget.primaryColor ?? Colors.grey));
 
   // Updated mainList method
   Widget mainList(dynamic setState) {
@@ -506,4 +521,3 @@ class _CustomSearchableDropDownState extends State<CustomSearchableDropDown> wit
 
   void onItemChanged(String value) => setState(() => newDataList = mainDataListGroup.where((string) => string.toLowerCase().contains(value.toLowerCase())).toList());
 }
-
